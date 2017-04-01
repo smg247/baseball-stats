@@ -25,7 +25,7 @@ abstract class HtmlTemplater {
         $query_string = 'select ';
         foreach (array_keys($this->column_names) as &$column_name) {
             if ($column_name == end(array_keys($this->column_names))) {
-                $query_string .= "$column_name , id "; //Always return the id as the last column
+                $query_string .= "$column_name, id "; //Always return the id as the last column
             } else {
                 $query_string .= "$column_name, ";
             }
@@ -91,12 +91,16 @@ class ReadTemplater extends HtmlTemplater {
     function display_record($record) {
         $current_id = -1;
         $output = '<tr>';
+
+        $counter = 1;
         foreach ($record as &$value) {
-            if ($value == end($record)) { // This is the id, we don't want to display it
+            if ($counter == count($record)) { // This is the id, we don't want to display it
                 $current_id = $value;
             } else {
                 $output .= "<td>$value</td>";
             }
+
+            $counter++;
         }
 
         //The Actions
