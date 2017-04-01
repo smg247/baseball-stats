@@ -23,9 +23,9 @@ abstract class HtmlTemplater {
 
     function find_records() {
         $query_string = 'select ';
-        foreach ($this->column_names as &$column_name) {
-            if ($column_name == end($this->column_names)) {
-                $query_string .= "$column_name, id "; //Always return the id as the last column
+        foreach (array_keys($this->column_names) as &$column_name) {
+            if ($column_name == end(array_keys($this->column_names))) {
+                $query_string .= "$column_name , id "; //Always return the id as the last column
             } else {
                 $query_string .= "$column_name, ";
             }
@@ -125,7 +125,7 @@ class ReadTemplater extends HtmlTemplater {
 
     function display_header() {
         $output = '<tr>';
-        foreach ($this->column_names as &$column_name) {
+        foreach (array_values($this->column_names) as &$column_name) {
             $output .= "<th>$column_name</th>";
         }
 
