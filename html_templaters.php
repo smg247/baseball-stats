@@ -1,5 +1,5 @@
 <?php
-
+include 'column.php';
 
 abstract class HtmlTemplater
 {
@@ -53,23 +53,33 @@ class ReadTemplater extends HtmlTemplater
 
     var $allowDelete;
     var $allowEdit;
+    var $creationUrl;
     var $detailLink;
     var $referrer;
+    var $createActionName;
 
 
-    public function __construct($tableName, $columns, $id, $selectBy, $allowDelete, $allowEdit, $detailLink, $referrer)
+    public function __construct($tableName, $columns, $id, $selectBy, $allowDelete, $allowEdit, $creationUrl, $detailLink, $referrer, $createActionName)
     {
         parent::__construct($tableName, $columns, $id, $selectBy);
         $this->allowDelete = $allowDelete;
         $this->allowEdit = $allowEdit;
+        $this->creationUrl = $creationUrl;
         $this->detailLink = $detailLink;
         $this->referrer = $referrer;
+        $this->createActionName = $createActionName;
     }
 
 
     function execute()
     {
-        return $this->display_all_records($this->find_records());
+        $output = '';
+        if ($this->creationUrl != null) {
+            $output .= "<h4><a href='$this->creationUrl'>Create $this->createActionName</a></h4>";
+        }
+        $output .= $this->display_all_records($this->find_records());
+
+        return $output;
     }
 
 
@@ -163,55 +173,57 @@ class ReadTemplater extends HtmlTemplater
 }
 
 
-class Column
-{
-    var $name;
-    var $displayName;
-    var $fieldType;
-    var $valuesQuery;
+class CreateTemplater extends HtmlTemplater {
 
-    public static function complexColumn($name, $displayName, $fieldType, $valuesQuery)
+    var $redirectUrl;
+
+    public function __construct($tableName, $columns, $redirectUrl)
     {
-        return new Column($name, $displayName, $fieldType, $valuesQuery);
+        parent::__construct($tableName, $columns, null, null);
+        $this->redirectUrl = $redirectUrl;
     }
 
-    public static function simpleColumn($name, $displayName)
+
+    function execute()
     {
-        return new Column($name, $displayName, null, null);
+        $output = "<div class='row'><form class='form' method='get' action='/create-record.php'></div>"; //TODO: this is going to have to be smarter
+
+        foreach ($this->columns as &$column) {
+            $output .= $this->create_field($column);
+        }
+
+        $output .= $this->create_hidden_fields();
+
+        $output .= '<br><input class="btn" type="submit" value="Submit">';
+        $output .= '</form>';
+
+        return $output;
     }
 
-    public function __construct($name, $displayName, $fieldType, $valuesQuery)
+    function create_field($column)
     {
-        $this->name = $name;
-        $this->displayName = $displayName;
-        $this->fieldType = $fieldType;
-        $this->valuesQuery = $valuesQuery;
+        $fieldType = $column->getType();
+        $name = $column->getName();
+        $displayName = $column->getDisplayName();
+
+        return "<label for='$name'>$displayName</label><input class='form-control' type='$fieldType' name='$name' id='$name' />";
     }
 
-    public function getName()
+    function create_hidden_fields()
     {
-        return $this->name;
-    }
+        $column_names = '';
+        foreach ($this->columns as &$column) {
+            if ($column == end($this->columns)) {
+                $column_names .= $column->getName();
+            } else {
+                $column_names .= $column->getName() . ',';
+            }
+        }
 
-    public function getDisplayName()
-    {
-        return $this->displayName;
+        $output = "<input type='hidden' name='table' value='$this->tableName'/>";
+        $output .= "<input type='hidden' name='columns' value='$column_names'/>";
+        $output .= "<input type='hidden' name='redirectUrl' value='$this->redirectUrl'/>";
+        return $output;
     }
-
-    public function getFieldType()
-    {
-        return $this->fieldType;
-    }
-
-    public function getValuesQuery()
-    {
-        return $this->valuesQuery;
-    }
-
-    function __toString()
-    {
-        return $this->name . ' ' . $this->displayName;
-    }
-
 
 }
