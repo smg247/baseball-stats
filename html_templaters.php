@@ -1,30 +1,33 @@
 <?php
 
 
-abstract class HtmlTemplater {
+abstract class HtmlTemplater
+{
 
     var $mysqli;
     var $tableName;
-    var $id;
+    var $id; // If no id is provided it will be assumed we are acting on all values
     var $selectBy;
-    var $column_names; // If no id is provided it will be assumed we are acting on all values
+    var $columns;
 
 
-    public function __construct($tableName, $column_names, $id, $selectBy)
+    public function __construct($tableName, $columns, $id, $selectBy)
     {
         $this->tableName = $tableName;
         $this->id = $id;
-        $this->column_names = $column_names;
+        $this->columns = $columns;
         $this->selectBy = $selectBy;
 
         $properties = include 'properties.php';
         $this->mysqli = new mysqli('stepheng.sgedu.site', $properties['db_user'], $properties['db_pass'], $properties['db_name'], '3306');
     }
 
-    function find_records() {
+    function find_records()
+    {
         $query_string = 'select ';
-        foreach (array_keys($this->column_names) as &$column_name) {
-            if ($column_name == end(array_keys($this->column_names))) {
+        foreach ($this->columns as &$column) {
+            $column_name = $column->getName();
+            if ($column == end($this->columns)) {
                 $query_string .= "$column_name, id "; //Always return the id as the last column
             } else {
                 $query_string .= "$column_name, ";
@@ -45,22 +48,22 @@ abstract class HtmlTemplater {
 }
 
 
-class ReadTemplater extends HtmlTemplater {
+class ReadTemplater extends HtmlTemplater
+{
 
     var $allowDelete;
     var $allowEdit;
     var $detailLink;
+    var $referrer;
 
-    /**
-     * ReadTemplater constructor.
-     * @param $allowDelete
-     */
-    public function __construct($tableName, $column_names, $id, $selectBy, $allowDelete, $allowEdit, $detailLink)
+
+    public function __construct($tableName, $columns, $id, $selectBy, $allowDelete, $allowEdit, $detailLink, $referrer)
     {
-        parent::__construct($tableName, $column_names, $id, $selectBy);
+        parent::__construct($tableName, $columns, $id, $selectBy);
         $this->allowDelete = $allowDelete;
         $this->allowEdit = $allowEdit;
         $this->detailLink = $detailLink;
+        $this->referrer = $referrer;
     }
 
 
@@ -79,8 +82,12 @@ class ReadTemplater extends HtmlTemplater {
         $output .= $this->display_header();
 
         //The values
-        foreach ($records as &$record) {
-            $output .= $this->display_record($record);
+        if (sizeof($records) > 0) {
+            foreach ($records as &$record) {
+                $output .= $this->display_record($record);
+            }
+        } else {
+            $output .= '<tr><td>No results available.</td></tr>';
         }
 
         $output .= $this->end_table();
@@ -88,7 +95,8 @@ class ReadTemplater extends HtmlTemplater {
         return $output;
     }
 
-    function display_record($record) {
+    function display_record($record)
+    {
         $current_id = -1;
         $output = '<tr>';
 
@@ -108,10 +116,10 @@ class ReadTemplater extends HtmlTemplater {
             $output .= "<td><a href='/$this->detailLink?id=$current_id'>details</a></td>";
         }
         if ($this->allowDelete) {
-            $output .= "<td><a href='/delete-record?table=$this->tableName&id=$current_id'>delete</a></td>";
+            $output .= "<td><a href='/delete-record.php?table=$this->tableName&id=$current_id&referrer=$this->referrer'>delete</a></td>";
         }
-        if ($this->allowDelete) {
-            $output .= "<td><a href='/edit-record?table=$this->tableName&id=$current_id'>edit</td>";
+        if ($this->allowEdit) {
+            $output .= "<td><a href='/edit-record.php?table=$this->tableName&id=$current_id'>edit</td>";
         }
 
         $output .= '</tr>';
@@ -119,18 +127,21 @@ class ReadTemplater extends HtmlTemplater {
         return $output;
     }
 
-    function start_table() {
+    function start_table()
+    {
         return '<table class="table">';
     }
 
-    function end_table() {
+    function end_table()
+    {
         return '</table>';
     }
 
-    function display_header() {
+    function display_header()
+    {
         $output = '<tr>';
-        foreach (array_values($this->column_names) as &$column_name) {
-            $output .= "<th>$column_name</th>";
+        foreach ($this->columns as &$column) {
+            $output .= '<th>' . $column->getDisplayName() . '</th>';
         }
 
         if ($this->detailLink != null) {
@@ -148,5 +159,59 @@ class ReadTemplater extends HtmlTemplater {
 
         return $output;
     }
+
+}
+
+
+class Column
+{
+    var $name;
+    var $displayName;
+    var $fieldType;
+    var $valuesQuery;
+
+    public static function complexColumn($name, $displayName, $fieldType, $valuesQuery)
+    {
+        return new Column($name, $displayName, $fieldType, $valuesQuery);
+    }
+
+    public static function simpleColumn($name, $displayName)
+    {
+        return new Column($name, $displayName, null, null);
+    }
+
+    public function __construct($name, $displayName, $fieldType, $valuesQuery)
+    {
+        $this->name = $name;
+        $this->displayName = $displayName;
+        $this->fieldType = $fieldType;
+        $this->valuesQuery = $valuesQuery;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getDisplayName()
+    {
+        return $this->displayName;
+    }
+
+    public function getFieldType()
+    {
+        return $this->fieldType;
+    }
+
+    public function getValuesQuery()
+    {
+        return $this->valuesQuery;
+    }
+
+    function __toString()
+    {
+        return $this->name . ' ' . $this->displayName;
+    }
+
 
 }
