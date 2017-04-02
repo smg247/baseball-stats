@@ -53,18 +53,18 @@ class ReadTemplater extends HtmlTemplater
 
     var $allowDelete;
     var $allowEdit;
-    var $creationUrl;
+    var $createEditUrl;
     var $detailLink;
     var $referrer;
     var $createActionName;
 
 
-    public function __construct($tableName, $columns, $id, $selectBy, $allowDelete, $allowEdit, $creationUrl, $detailLink, $referrer, $createActionName)
+    public function __construct($tableName, $columns, $id, $selectBy, $allowDelete, $allowEdit, $CreateEditUrl, $detailLink, $referrer, $createActionName)
     {
         parent::__construct($tableName, $columns, $id, $selectBy);
         $this->allowDelete = $allowDelete;
         $this->allowEdit = $allowEdit;
-        $this->creationUrl = $creationUrl;
+        $this->createEditUrl = $CreateEditUrl;
         $this->detailLink = $detailLink;
         $this->referrer = $referrer;
         $this->createActionName = $createActionName;
@@ -74,8 +74,8 @@ class ReadTemplater extends HtmlTemplater
     function execute()
     {
         $output = '';
-        if ($this->creationUrl != null) {
-            $output .= "<h4><a href='$this->creationUrl'>Create $this->createActionName</a></h4>";
+        if ($this->createEditUrl != null && $this->createActionName != null) {
+            $output .= "<h4><a href='$this->createEditUrl'>Create $this->createActionName</a></h4>";
         }
         $output .= $this->display_all_records($this->find_records());
 
@@ -110,13 +110,15 @@ class ReadTemplater extends HtmlTemplater
         $current_id = -1;
         $output = '<tr>';
 
-        $counter = 1;
+        $values = array();
+        $counter = 0;
         foreach ($record as &$value) {
-            if ($counter == count($record)) { // This is the id, we don't want to display it
+            if ($counter + 1 == count($record)) { // This is the id, we don't want to display it
                 $current_id = $value;
             } else {
                 $output .= "<td>$value</td>";
             }
+            $values[$counter] = $value;
 
             $counter++;
         }
@@ -129,7 +131,14 @@ class ReadTemplater extends HtmlTemplater
             $output .= "<td><a href='/delete-record.php?table=$this->tableName&id=$current_id&referrer=$this->referrer'>delete</a></td>";
         }
         if ($this->allowEdit) {
-            $output .= "<td><a href='/edit-record.php?table=$this->tableName&id=$current_id'>edit</td>";
+            $params = '';
+            $counter = 0;
+            foreach ($this->columns as &$column) {
+                $name = $column->getName();
+                $params .= "&$name=$values[$counter]";
+                $counter++;
+            }
+            $output .= "<td><a href='/$this->createEditUrl?is-edit=true&table=$this->tableName&id=$current_id$params'>edit</td>";
         }
 
         $output .= '</tr>';
@@ -173,20 +182,22 @@ class ReadTemplater extends HtmlTemplater
 }
 
 
-class CreateTemplater extends HtmlTemplater {
+class CreateEditTemplater extends HtmlTemplater {
 
     var $redirectUrl;
+    var $isEdit;
 
-    public function __construct($tableName, $columns, $redirectUrl)
+    public function __construct($tableName, $columns, $id, $redirectUrl, $isEdit)
     {
-        parent::__construct($tableName, $columns, null, null);
+        parent::__construct($tableName, $columns, $id, null);
         $this->redirectUrl = $redirectUrl;
+        $this->isEdit = $isEdit;
     }
 
 
     function execute()
     {
-        $output = "<div class='row'><form class='form' method='get' action='/create-record.php'></div>"; //TODO: this is going to have to be smarter
+        $output = "<div class='row'><form class='form' method='get' action='/create-edit-record.php'></div>";
 
         foreach ($this->columns as &$column) {
             $output .= $this->create_field($column);
@@ -228,6 +239,9 @@ class CreateTemplater extends HtmlTemplater {
         $output .= "<input type='hidden' name='columns' value='$column_names'/>";
         $output .= "<input type='hidden' name='column-types' value='$column_types'/>";
         $output .= "<input type='hidden' name='redirectUrl' value='$this->redirectUrl'/>";
+        $output .= "<input type='hidden' name='is-edit' value='$this->isEdit'/>";
+        $output .= "<input type='hidden' name='id' value='$this->id'/>";
+
         return $output;
     }
 
