@@ -51,17 +51,38 @@ class CreateAction extends ConstructiveAction
         $column_names = '';
         $column_values = '';
         foreach ($this->columns as &$column) {
-             $column_names .= $column->getName();
-             $column_values .= '\'' . $column->getValue() . '\'';
+            $type = $column->getType();
+            $value = $column->getValue();
 
-             if ($column != end($this->columns)) {
+            $column_names .= $column->getName();
+            $column_values .= $this->format_value($value, $type);
+
+            if ($column != end($this->columns)) {
                 $column_names .=  ', ';
                 $column_values .=  ', ';
             }
         }
 
         $query_string = "insert into $this->tableName ($column_names) values ($column_values);";
+        error_log($query_string); // Not really an error, but this is an easy way to see the query in the terminal
+
         $this->mysqli->query($query_string);
+        error_log($this->mysqli->error);
+    }
+
+    function format_value($value, $type)
+    {
+        if ($type == 'number') {
+            return $value;
+        } else if ($type == 'year') {
+            return "'$value-01-01'";
+        } else {
+            return "'$value'";
+        }
+    }
+
+    function get_inserted_id()
+    {
         return $this->mysqli->insert_id;
     }
 

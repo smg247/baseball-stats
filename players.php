@@ -2,13 +2,13 @@
 include 'html_templaters.php';
 include 'header.html';
 
-$columns = array(Column::simpleColumn('name', 'Name')
-                    , Column::simpleColumn('age', 'Age')
-                    , Column::simpleColumn('height', 'Height')
-                    , Column::simpleColumn('weight', 'Weight')
-                    , Column::simpleColumn('handedness', 'Handedness')
-                    , Column::simpleColumn('position', 'Position')
-                    , Column::simpleColumn('team', 'Team'));
+$columns = array(Column::simpleDisplayColumn('name', 'Name')
+                    , Column::simpleDisplayColumn('age', 'Age')
+                    , Column::simpleDisplayColumn('height', 'Height')
+                    , Column::simpleDisplayColumn('weight', 'Weight')
+                    , Column::simpleDisplayColumn('handedness', 'Handedness')
+                    , Column::simpleDisplayColumn('position', 'Position')
+                    , Column::simpleDisplayColumn('team', 'Team'));
 
 $read_templater = new ReadTemplater('DetailedPlayers', $columns, null, 'id', true, true, 'create-player.php', 'player.php', 'players.php', 'Player');
 

@@ -205,23 +205,28 @@ class CreateTemplater extends HtmlTemplater {
         $fieldType = $column->getType();
         $name = $column->getName();
         $displayName = $column->getDisplayName();
+        $value = $column->getValue();
 
-        return "<label for='$name'>$displayName</label><input class='form-control' type='$fieldType' name='$name' id='$name' />";
+        return "<label for='$name'>$displayName</label><input class='form-control' type='$fieldType' name='$name' id='$name' value='$value' />";
     }
 
     function create_hidden_fields()
     {
         $column_names = '';
+        $column_types = '';
         foreach ($this->columns as &$column) {
             if ($column == end($this->columns)) {
                 $column_names .= $column->getName();
+                $column_types .= $column->getType();
             } else {
                 $column_names .= $column->getName() . ',';
+                $column_types .= $column->getType() . ',';
             }
         }
 
         $output = "<input type='hidden' name='table' value='$this->tableName'/>";
         $output .= "<input type='hidden' name='columns' value='$column_names'/>";
+        $output .= "<input type='hidden' name='column-types' value='$column_types'/>";
         $output .= "<input type='hidden' name='redirectUrl' value='$this->redirectUrl'/>";
         return $output;
     }
