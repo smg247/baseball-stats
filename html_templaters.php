@@ -19,7 +19,7 @@ abstract class HtmlTemplater
         $this->selectBy = $selectBy;
 
         $properties = include 'properties.php';
-        $this->mysqli = new mysqli('stepheng.sgedu.site', $properties['db_user'], $properties['db_pass'], $properties['db_name'], '3306');
+        $this->mysqli = new mysqli($properties['db_host'], $properties['db_user'], $properties['db_pass'], $properties['db_name'], '3306');
     }
 
     function find_records()

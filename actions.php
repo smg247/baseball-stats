@@ -13,7 +13,7 @@ abstract class Action
         $this->id = $id;
 
         $properties = include 'properties.php';
-        $this->mysqli = new mysqli('stepheng.sgedu.site', $properties['db_user'], $properties['db_pass'], $properties['db_name'], '3306');
+        $this->mysqli = new mysqli($properties['db_host'], $properties['db_user'], $properties['db_pass'], $properties['db_name'], '3306');
     }
 
     abstract function execute();
