@@ -40,7 +40,7 @@ abstract class HtmlTemplater
         }
         $query_string .= ';';
 
-        return $this->mysqli->query($query_string)->fetch_all();
+        return $this->mysqli->query($query_string);
     }
 
 
@@ -83,7 +83,7 @@ class ReadTemplater extends HtmlTemplater
     }
 
 
-    function display_all_records($records)
+    function display_all_records($result)
     {
 
         $output = $this->start_table();
@@ -92,8 +92,8 @@ class ReadTemplater extends HtmlTemplater
         $output .= $this->display_header();
 
         //The values
-        if (sizeof($records) > 0) {
-            foreach ($records as &$record) {
+        if ($result->num_rows > 0) { //todo: fix
+            while ($record = $result->fetch_assoc()) {
                 $output .= $this->display_record($record);
             }
         } else {
