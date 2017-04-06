@@ -200,7 +200,8 @@ class CreateEditTemplater extends HtmlTemplater {
 
     function execute()
     {
-        $output = "<div class='row'><form class='form' method='get' action='/create-edit-record.php'></div>";
+        $formAction = $this->baseUrl . 'create-edit-record.php';
+        $output = "<div class='row'><form class='form' method='get' action='$formAction'></div>";
 
         foreach ($this->columns as &$column) {
             $output .= $this->create_field($column);
