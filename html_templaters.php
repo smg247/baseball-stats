@@ -4,6 +4,7 @@ include 'column.php';
 abstract class HtmlTemplater
 {
 
+    var $baseUrl;
     var $mysqli;
     var $tableName;
     var $id; // If no id is provided it will be assumed we are acting on all values
@@ -19,6 +20,7 @@ abstract class HtmlTemplater
         $this->selectBy = $selectBy;
 
         $properties = include 'properties.php';
+        $this->baseUrl = $properties['base'];
         $this->mysqli = new mysqli($properties['db_host'], $properties['db_user'], $properties['db_pass'], $properties['db_name'], '3306');
     }
 
@@ -92,7 +94,7 @@ class ReadTemplater extends HtmlTemplater
         $output .= $this->display_header();
 
         //The values
-        if ($result->num_rows > 0) { //todo: fix
+        if ($result->num_rows > 0) {
             while ($record = $result->fetch_assoc()) {
                 $output .= $this->display_record($record);
             }
@@ -125,10 +127,11 @@ class ReadTemplater extends HtmlTemplater
 
         //The Actions
         if ($this->detailLink != null) {
-            $output .= "<td><a href='/$this->detailLink?id=$current_id'>details</a></td>";
+            $output .= "<td><a href='/$this->baseUrl$this->detailLink?id=$current_id'>details</a></td>";
         }
         if ($this->allowDelete) {
-            $output .= "<td><a href='/delete-record.php?table=$this->tableName&id=$current_id&referrer=$this->referrer'>delete</a></td>";
+            $href = $this->baseUrl . '/delete-record.php?table=' . "$this->tableName&id=$current_id&referrer=$this->referrer";
+            $output .= "<td><a href='$href'>delete</a></td>";
         }
         if ($this->allowEdit) {
             $params = '';
@@ -138,7 +141,7 @@ class ReadTemplater extends HtmlTemplater
                 $params .= "&$name=$values[$counter]";
                 $counter++;
             }
-            $output .= "<td><a href='/$this->createEditUrl?is-edit=true&table=$this->tableName&id=$current_id$params'>edit</td>";
+            $output .= "<td><a href='/$this->baseUrl$this->createEditUrl?is-edit=true&table=$this->tableName&id=$current_id$params'>edit</td>";
         }
 
         $output .= '</tr>';

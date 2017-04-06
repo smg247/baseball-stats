@@ -1,5 +1,6 @@
 <?php
 include 'actions.php';
+$properties = include 'properties.php';
 $table = $_GET['table'];
 $id = $_GET['id'];
 $columns = $_GET['columns'];
@@ -33,6 +34,6 @@ if (!$is_edit && !$contains_id) {
 } else if (!$contains_id) {
     $redirectUrl .= "?id=$id";
 }
-
-header("Location: /$redirectUrl");
+$base = $properties['base'];
+header("Location: $base$redirectUrl");
 exit();
