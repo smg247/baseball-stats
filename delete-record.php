@@ -9,6 +9,5 @@ $referrer = $_GET['referrer'];
 $deleteAction = new DeleteAction($table, $id);
 $deleteAction->execute();
 
-$base = $properties['base'];
 header("Location: /$referrer");
 exit();

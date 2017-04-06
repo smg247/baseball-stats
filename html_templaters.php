@@ -130,7 +130,7 @@ class ReadTemplater extends HtmlTemplater
             $output .= "<td><a href='/$this->baseUrl$this->detailLink?id=$current_id'>details</a></td>";
         }
         if ($this->allowDelete) {
-            $href = $this->baseUrl . '/delete-record.php?table=' . "$this->tableName&id=$current_id&referrer=$this->referrer";
+            $href = '/delete-record.php?table=' . "$this->tableName&id=$current_id&referrer=$this->referrer";
             $output .= "<td><a href='$href'>delete</a></td>";
         }
         if ($this->allowEdit) {
@@ -200,7 +200,7 @@ class CreateEditTemplater extends HtmlTemplater {
 
     function execute()
     {
-        $formAction = $this->baseUrl . 'create-edit-record.php';
+        $formAction = 'create-edit-record.php';
         $output = "<div class='row'><form class='form' method='get' action='$formAction'></div>";
 
         foreach ($this->columns as &$column) {
