@@ -10,5 +10,5 @@ $deleteAction = new DeleteAction($table, $id);
 $deleteAction->execute();
 
 $base = $properties['base'];
-header("Location: /$base$referrer");
+header("Location: /$referrer");
 exit();

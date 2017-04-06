@@ -35,5 +35,5 @@ if (!$is_edit && !$contains_id) {
     $redirectUrl .= "?id=$id";
 }
 $base = $properties['base'];
-header("Location: $base$redirectUrl");
+header("Location: $redirectUrl");
 exit();
