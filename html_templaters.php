@@ -235,12 +235,43 @@ class CreateEditTemplater extends HtmlTemplater {
 
     function create_field($column)
     {
+        if ($column->getType() === 'select') {
+            return $this->create_select_field($column);
+        } else {
+            return $this->create_basic_field($column);
+        }
+    }
+
+    function create_basic_field($column)
+    {
         $fieldType = $column->getType();
         $name = $column->getName();
         $displayName = $column->getDisplayName();
         $value = $column->getValue();
 
         return "<label for='$name'>$displayName</label><input class='form-control' type='$fieldType' name='$name' id='$name' value='$value' />";
+    }
+
+    function create_select_field($column)
+    {
+        $name = $column->getName();
+        $displayName = $column->getDisplayName();
+        $selectOptions = $column->getSelectOptions();
+
+        $output = "<label for='$name'>$displayName</label><select name='$name' class='form-control'>";
+
+        foreach ($selectOptions as $value => $display) {
+            $output .= "<option value='$value'";
+
+            if ($value === $column->getValue()) {
+                $output .= 'selected';
+            }
+            $output .= ">$display</option>";
+        }
+
+        $output .= '</select>';
+
+        return $output;
     }
 
     function create_hidden_fields()

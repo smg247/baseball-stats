@@ -6,7 +6,7 @@ class Column
     var $displayName;
     var $value;
     var $type;
-    var $valuesQuery;
+    var $selectOptions;
 
 
     public static function complexValuedDisplayColumn($name, $displayName, $type, $value)
@@ -24,13 +24,13 @@ class Column
         return new Column($name, null, $value, $type, null);
     }
 
-    public function __construct($name, $displayName, $value, $fieldType, $valuesQuery)
+    public function __construct($name, $displayName, $value, $fieldType, $selectOptions)
     {
         $this->name = $name;
         $this->displayName = $displayName;
         $this->value = $value;
         $this->type = $fieldType;
-        $this->valuesQuery = $valuesQuery;
+        $this->selectOptions = $selectOptions;
     }
 
     public function getName()
@@ -53,9 +53,9 @@ class Column
         return $this->type;
     }
 
-    public function getValuesQuery()
+    public function getSelectOptions()
     {
-        return $this->valuesQuery;
+        return $this->selectOptions;
     }
 
     function __toString()

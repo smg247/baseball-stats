@@ -10,7 +10,7 @@ $columns = array(Column::simpleDisplayColumn('name', 'Name')
                     , Column::simpleDisplayColumn('position', 'Position')
                     , Column::simpleDisplayColumn('team', 'Team'));
 
-$read_templater = new ReadTemplater('DetailedPlayers', $columns, null, 'id', true, true, 'create-player.php', null, 'player.php', 'players.php', 'Player');
+$read_templater = new ReadTemplater('DetailedPlayers', $columns, null, 'id', true, true, 'create-edit-player.php', null, 'player.php', 'players.php', 'Player');
 
 echo '<h1>Players</h1>';
 echo $read_templater->execute();
