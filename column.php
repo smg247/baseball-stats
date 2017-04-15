@@ -8,10 +8,6 @@ class Column
     var $type;
     var $valuesQuery;
 
-    public static function complexDisplayColumn($name, $displayName, $type)
-    {
-        return new Column($name, $displayName, null, $type, null);
-    }
 
     public static function complexValuedDisplayColumn($name, $displayName, $type, $value)
     {
@@ -21,11 +17,6 @@ class Column
     public static function simpleDisplayColumn($name, $displayName)
     {
         return new Column($name, $displayName, null, 'text', null);
-    }
-
-    public static function simpleValuedColumn($name, $value)
-    {
-        return new Column($name, null, $value, 'text', null);
     }
 
     public static function complexValuedColumn($name, $value, $type)

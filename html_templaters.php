@@ -56,12 +56,13 @@ class ReadTemplater extends HtmlTemplater
     var $allowDelete;
     var $allowEdit;
     var $createEditUrl;
+    var $createUrlSuffix;
     var $detailLink;
     var $referrer;
     var $createActionName;
 
 
-    public function __construct($tableName, $columns, $id, $selectBy, $allowDelete, $allowEdit, $CreateEditUrl, $detailLink, $referrer, $createActionName)
+    public function __construct($tableName, $columns, $id, $selectBy, $allowDelete, $allowEdit, $CreateEditUrl, $createUrlSuffix, $detailLink, $referrer, $createActionName)
     {
         parent::__construct($tableName, $columns, $id, $selectBy);
         $this->allowDelete = $allowDelete;
@@ -70,6 +71,7 @@ class ReadTemplater extends HtmlTemplater
         $this->detailLink = $detailLink;
         $this->referrer = $referrer;
         $this->createActionName = $createActionName;
+        $this->createUrlSuffix = $createUrlSuffix;
     }
 
 
@@ -77,7 +79,7 @@ class ReadTemplater extends HtmlTemplater
     {
         $output = '';
         if ($this->createEditUrl != null && $this->createActionName != null) {
-            $output .= "<h4><a href='$this->createEditUrl'>Create $this->createActionName</a></h4>";
+            $output .= "<h4><a href='$this->createEditUrl$this->createUrlSuffix'>Create $this->createActionName</a></h4>";
         }
         $output .= $this->display_all_records($this->find_records());
 
@@ -112,12 +114,14 @@ class ReadTemplater extends HtmlTemplater
         $current_id = -1;
         $output = '<tr>';
 
+        $hiddenFields = $this->determineHiddenFieldLocations();
+
         $values = array();
         $counter = 0;
         foreach ($record as &$value) {
             if ($counter + 1 == count($record)) { // This is the id, we don't want to display it
                 $current_id = $value;
-            } else {
+            } else if (!in_array($counter, $hiddenFields)) {
                 $output .= "<td>$value</td>";
             }
             $values[$counter] = $value;
@@ -180,6 +184,20 @@ class ReadTemplater extends HtmlTemplater
 
 
         return $output;
+    }
+
+    public function determineHiddenFieldLocations()
+    {
+        $hiddenFieldIndicies = array();
+        $counter = 0;
+        foreach ($this->columns as &$column) {
+            if ($column->getType() === 'hidden') {
+                $hiddenFieldIndicies[] = $counter;
+            }
+            $counter++;
+        }
+
+        return $hiddenFieldIndicies;
     }
 
 }

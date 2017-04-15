@@ -1,4 +1,5 @@
 <?php
+error_reporting(0); // Need to turn off to use create functionality with missing params
 include 'html_templaters.php';
 include 'header.html';
 

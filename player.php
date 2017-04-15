@@ -10,7 +10,7 @@ $columns = array(Column::simpleDisplayColumn('name', 'Name')
                 , Column::simpleDisplayColumn('position', 'Position')
                 , Column::simpleDisplayColumn('team', 'Team'));
 
-$detailed_player = new ReadTemplater('DetailedPlayers', $columns, $id, 'id', false, true, null, null, null, null);
+$detailed_player = new ReadTemplater('DetailedPlayers', $columns, $id, 'id', false, true, null, null, null, null, null);
 
 echo '<h1>Player Details</h1>';
 echo $detailed_player->execute();
@@ -21,7 +21,7 @@ $columns = array(Column::simpleDisplayColumn('eff_rating', 'Efficiency Rating')
                 , Column::complexValuedDisplayColumn('player_id', '', 'hidden', $id));
 $referrer = "player.php?id=$id";
 $creationUrl = "create-edit-position-stat.php";
-$position_stats = new ReadTemplater('PositionStat', $columns, $id, 'player_id', true, true, $creationUrl, null, $referrer, 'Position Stat');
+$position_stats = new ReadTemplater('PositionStat', $columns, $id, 'player_id', true, true, $creationUrl, null, null, $referrer, 'Position Stat');
 
 echo '<h2>Statistics</h2>';
 echo $position_stats->execute();
