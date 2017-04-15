@@ -15,15 +15,35 @@ $detailed_player = new ReadTemplater('DetailedPlayers', $columns, $id, 'id', fal
 echo '<h1>Player Details</h1>';
 echo $detailed_player->execute();
 
-$columns = array(Column::simpleDisplayColumn('eff_rating', 'Efficiency Rating')
-                , Column::simpleDisplayColumn('batting_avg', 'Batting Average')
-                , Column::simpleDisplayColumn('YEAR(year)', 'Year')
-                , Column::complexValuedDisplayColumn('player_id', '', 'hidden', $id));
-$referrer = "player.php?id=$id";
-$creationUrl = "create-edit-position-stat.php";
-$position_stats = new ReadTemplater('PositionStat', $columns, $id, 'player_id', true, true, $creationUrl, "?player_id=$id", null, $referrer, 'Position Stat');
+$properties = include 'properties.php';
+$mysqli = new mysqli($properties['db_host'], $properties['db_user'], $properties['db_pass'], $properties['db_name'], '3306');
 
-echo '<h2>Statistics</h2>';
-echo $position_stats->execute();
+$positionQuery = "select position from Player where id = $id";
+$result = $mysqli->query($positionQuery)->fetch_assoc();
+$position = array_values($result)[0];
+
+if ($position === 'LHP' || $position === 'RHP') {
+    $columns = array(Column::simpleDisplayColumn('era', 'ERA')
+    , Column::simpleDisplayColumn('whip', 'WHIP')
+    , Column::simpleDisplayColumn('YEAR(year)', 'Year')
+    , Column::complexValuedDisplayColumn('player_id', '', 'hidden', $id));
+    $referrer = "player.php?id=$id";
+    $creationUrl = "create-edit-pitching-stat.php";
+    $pitching_stats = new ReadTemplater('PitchingStat', $columns, $id, 'player_id', true, true, $creationUrl, "?player_id=$id", null, $referrer, 'Pitching Stat');
+
+    echo '<h2>Statistics</h2>';
+    echo $pitching_stats->execute();
+} else {
+    $columns = array(Column::simpleDisplayColumn('eff_rating', 'Efficiency Rating')
+    , Column::simpleDisplayColumn('batting_avg', 'Batting Average')
+    , Column::simpleDisplayColumn('YEAR(year)', 'Year')
+    , Column::complexValuedDisplayColumn('player_id', '', 'hidden', $id));
+    $referrer = "player.php?id=$id";
+    $creationUrl = "create-edit-position-stat.php";
+    $position_stats = new ReadTemplater('PositionStat', $columns, $id, 'player_id', true, true, $creationUrl, "?player_id=$id", null, $referrer, 'Position Stat');
+
+    echo '<h2>Statistics</h2>';
+    echo $position_stats->execute();
+}
 
 include 'footer.html';

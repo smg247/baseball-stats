@@ -167,7 +167,9 @@ class ReadTemplater extends HtmlTemplater
     {
         $output = '<tr>';
         foreach ($this->columns as &$column) {
-            $output .= '<th>' . $column->getDisplayName() . '</th>';
+            if ($column->getType() !== 'hidden') {
+                $output .= '<th>' . $column->getDisplayName() . '</th>';
+            }
         }
 
         if ($this->detailLink != null) {
