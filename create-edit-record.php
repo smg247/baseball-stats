@@ -15,7 +15,7 @@ $column_list = array();
 $counter = 0;
 foreach ($columns as &$column) {
     $value = $_GET[$column];
-    $column_list[$counter] = Column::complexValuedColumn($column, $value, $column_types[$counter]);
+    $column_list[$counter] = Column::valuedColumn($column, $value, $column_types[$counter]);
     $counter++;
 }
 

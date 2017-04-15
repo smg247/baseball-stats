@@ -26,7 +26,8 @@ if ($position === 'LHP' || $position === 'RHP') {
     $columns = array(Column::simpleDisplayColumn('era', 'ERA')
     , Column::simpleDisplayColumn('whip', 'WHIP')
     , Column::simpleDisplayColumn('YEAR(year)', 'Year')
-    , Column::complexValuedDisplayColumn('player_id', '', 'hidden', $id));
+    , Column::valuedColumn('player_id', $id, 'hidden'));
+
     $referrer = "player.php?id=$id";
     $creationUrl = "create-edit-pitching-stat.php";
     $pitching_stats = new ReadTemplater('PitchingStat', $columns, $id, 'player_id', true, true, $creationUrl, "?player_id=$id", null, $referrer, 'Pitching Stat');
@@ -37,7 +38,8 @@ if ($position === 'LHP' || $position === 'RHP') {
     $columns = array(Column::simpleDisplayColumn('eff_rating', 'Efficiency Rating')
     , Column::simpleDisplayColumn('batting_avg', 'Batting Average')
     , Column::simpleDisplayColumn('YEAR(year)', 'Year')
-    , Column::complexValuedDisplayColumn('player_id', '', 'hidden', $id));
+    , Column::valuedColumn('player_id', $id, 'hidden'));
+
     $referrer = "player.php?id=$id";
     $creationUrl = "create-edit-position-stat.php";
     $position_stats = new ReadTemplater('PositionStat', $columns, $id, 'player_id', true, true, $creationUrl, "?player_id=$id", null, $referrer, 'Position Stat');

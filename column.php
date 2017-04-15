@@ -9,7 +9,7 @@ class Column
     var $selectOptions;
 
 
-    public static function complexValuedDisplayColumn($name, $displayName, $type, $value)
+    public static function createEditColumn($name, $displayName, $type, $value)
     {
         return new Column($name, $displayName, $value, $type, null);
     }
@@ -19,7 +19,7 @@ class Column
         return new Column($name, $displayName, null, 'text', null);
     }
 
-    public static function complexValuedColumn($name, $value, $type)
+    public static function valuedColumn($name, $value, $type)
     {
         return new Column($name, null, $value, $type, null);
     }

@@ -5,8 +5,8 @@ include 'header.html';
 
 $is_edit = $_GET['is-edit'];
 
-$columns = array(Column::complexValuedDisplayColumn('city', 'City', 'text', $_GET['city']),
-                 Column::complexValuedDisplayColumn('name', 'Name', 'text', $_GET['name']));
+$columns = array(Column::createEditColumn('city', 'City', 'text', $_GET['city']),
+                 Column::createEditColumn('name', 'Name', 'text', $_GET['name']));
 
 $createTemplater = new CreateEditTemplater('Team', $columns, $_GET['id'], 'team.php', boolval($is_edit));
 

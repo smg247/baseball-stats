@@ -265,7 +265,7 @@ class CreateEditTemplater extends HtmlTemplater {
         foreach ($selectOptions as $value => $display) {
             $output .= "<option value='$value'";
 
-            if ($value === $column->getValue()) {
+            if ($value == $column->getValue()) {
                 $output .= 'selected';
             }
             $output .= ">$display</option>";

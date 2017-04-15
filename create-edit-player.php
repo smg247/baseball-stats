@@ -21,22 +21,27 @@ foreach ($positionResult as $position) {
 $teamsQuery = 'select id, name from Team;';
 $teamsResult = $mysqli->query($teamsQuery);
 
+$currentTeamId = null;
 $teams = array();
 foreach ($teamsResult as $team) {
     $teamValues = array_values($team);
     $id = $teamValues[0];
     $name = $teamValues[1];
     $teams[$id] = $name;
+
+    if ($_GET['team'] === $name) {
+        $currentTeamId = $id;
+    }
 }
 
 
-$columns = array(Column::complexValuedDisplayColumn('name', 'Name', 'text', $_GET['name'])
-                , Column::complexValuedDisplayColumn('age', 'Age', 'text', $_GET['age'])
-                , Column::complexValuedDisplayColumn('height', 'Height', 'text', $_GET['height'])
-                , Column::complexValuedDisplayColumn('weight', 'Weight', 'number', $_GET['weight'])
-                , Column::complexValuedDisplayColumn('handedness', 'Handedness', 'handedness', $_GET['handedness'])
+$columns = array(Column::createEditColumn('name', 'Name', 'text', $_GET['name'])
+                , Column::createEditColumn('age', 'Age', 'text', $_GET['age'])
+                , Column::createEditColumn('height', 'Height', 'text', $_GET['height'])
+                , Column::createEditColumn('weight', 'Weight', 'number', $_GET['weight'])
+                , Column::createEditColumn('handedness', 'Handedness', 'handedness', $_GET['handedness'])
                 , new Column('position', 'Position', $_GET['position'], 'select', $positions)
-                , new Column('team', 'Team', $_GET['team'], 'select', $teams));
+                , new Column('team', 'Team', $currentTeamId, 'select', $teams));
 
 $createTemplater = new CreateEditTemplater('Player', $columns, $_GET['id'], 'player.php', boolval($is_edit));
 
