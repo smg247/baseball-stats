@@ -53,7 +53,7 @@ abstract class HtmlTemplater
 class ReadTemplater extends HtmlTemplater
 {
 
-    var $allowDelete;
+    var $deleteFromTable;
     var $allowEdit;
     var $createEditUrl;
     var $createUrlSuffix;
@@ -62,10 +62,10 @@ class ReadTemplater extends HtmlTemplater
     var $createActionName;
 
 
-    public function __construct($tableName, $columns, $id, $selectBy, $allowDelete, $allowEdit, $CreateEditUrl, $createUrlSuffix, $detailLink, $referrer, $createActionName)
+    public function __construct($tableName, $columns, $id, $selectBy, $deleteFromTable, $allowEdit, $CreateEditUrl, $createUrlSuffix, $detailLink, $referrer, $createActionName)
     {
         parent::__construct($tableName, $columns, $id, $selectBy);
-        $this->allowDelete = $allowDelete;
+        $this->deleteFromTable = $deleteFromTable;
         $this->allowEdit = $allowEdit;
         $this->createEditUrl = $CreateEditUrl;
         $this->detailLink = $detailLink;
@@ -133,8 +133,8 @@ class ReadTemplater extends HtmlTemplater
         if ($this->detailLink != null) {
             $output .= "<td><a href='/$this->baseUrl$this->detailLink?id=$current_id'>details</a></td>";
         }
-        if ($this->allowDelete) {
-            $href = '/' . $this->baseUrl . 'delete-record.php?table=' . "$this->tableName&id=$current_id&referrer=$this->referrer";
+        if ($this->deleteFromTable != null) {
+            $href = '/' . $this->baseUrl . 'delete-record.php?table=' . "$this->deleteFromTable&id=$current_id&referrer=$this->referrer";
             $output .= "<td><a href='$href'>delete</a></td>";
         }
         if ($this->allowEdit) {
@@ -175,7 +175,7 @@ class ReadTemplater extends HtmlTemplater
         if ($this->detailLink != null) {
             $output .= '<th></th>';
         }
-        if ($this->allowDelete) {
+        if ($this->deleteFromTable) {
             $output .= '<th></th>';
         }
         if ($this->allowEdit) {

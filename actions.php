@@ -26,6 +26,7 @@ class DeleteAction extends Action
     function execute()
     {
         $query_string = "delete from $this->tableName where id = $this->id";
+        error_log($query_string); // Not really an error, but this is an easy way to see the query in the terminal
         $this->mysqli->query($query_string);
     }
 }

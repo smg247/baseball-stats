@@ -5,7 +5,7 @@ include 'header.html';
 $id = $_GET['id'];
 
 $columns = array(Column::simpleDisplayColumn('city', 'City'), Column::simpleDisplayColumn('name', 'Name'));
-$team_templater = new ReadTemplater('Team', $columns, $id, "id", false, true, 'create-edit-team.php', null, null, null, null);
+$team_templater = new ReadTemplater('Team', $columns, $id, "id", null, true, 'create-edit-team.php', null, null, null, null);
 
 echo '<h1>Team Details</h1>';
 echo $team_templater->execute();
@@ -18,7 +18,7 @@ $columns = array(
     Column::valuedColumn('team_id', $id, 'hidden')
 );
 
-$season_templater = new ReadTemplater('Season', $columns, $id, "team_id", true, true, "create-edit-season.php", "?team_id=$id", null, "team.php?id=$id", "Season");
+$season_templater = new ReadTemplater('Season', $columns, $id, "team_id", 'Season', true, "create-edit-season.php", "?team_id=$id", null, "team.php?id=$id", "Season");
 
 echo '<h2>Seasons</h2>';
 echo $season_templater->execute();
@@ -31,7 +31,7 @@ $columns = array(
     Column::valuedColumn('home_team_id', $id, 'hidden')
 );
 
-$home_game_templater = new ReadTemplater('DetailedGame', $columns, $id, 'home_team_id', true, true, 'create-edit-game.php', "?team_id=$id", null, "team.php?id=$id", "Game");
+$home_game_templater = new ReadTemplater('DetailedGame', $columns, $id, 'home_team_id', 'Game', true, 'create-edit-game.php', "?team_id=$id", null, "team.php?id=$id", "Game");
 
 $columns = array(
     Column::simpleDisplayColumn('home_team_name', 'At'),
@@ -41,7 +41,7 @@ $columns = array(
     Column::valuedColumn('away_team_id', $id, 'hidden')
 );
 
-$away_game_templater = new ReadTemplater('DetailedGame', $columns, $id, 'away_team_id', true, true, 'create-edit-game.php', "?team_id=$id", null, "team.php?id=$id", null);
+$away_game_templater = new ReadTemplater('DetailedGame', $columns, $id, 'away_team_id', 'Game', true, 'create-edit-game.php', "?team_id=$id", null, "team.php?id=$id", null);
 
 echo '<h2>Games</h2>';
 echo $home_game_templater->execute();

@@ -10,7 +10,7 @@ $columns = array(Column::simpleDisplayColumn('name', 'Name')
                 , Column::simpleDisplayColumn('position', 'Position')
                 , Column::simpleDisplayColumn('team', 'Team'));
 
-$detailed_player = new ReadTemplater('DetailedPlayers', $columns, $id, 'id', false, true, 'create-edit-player.php', null, null, null, null);
+$detailed_player = new ReadTemplater('DetailedPlayers', $columns, $id, 'id', null, true, 'create-edit-player.php', null, null, null, null);
 
 echo '<h1>Player Details</h1>';
 echo $detailed_player->execute();
@@ -30,7 +30,7 @@ if ($position === 'LHP' || $position === 'RHP') {
 
     $referrer = "player.php?id=$id";
     $creationUrl = "create-edit-pitching-stat.php";
-    $pitching_stats = new ReadTemplater('PitchingStat', $columns, $id, 'player_id', true, true, $creationUrl, "?player_id=$id", null, $referrer, 'Pitching Stat');
+    $pitching_stats = new ReadTemplater('PitchingStat', $columns, $id, 'player_id', 'PitchingStat', true, $creationUrl, "?player_id=$id", null, $referrer, 'Pitching Stat');
 
     echo '<h2>Statistics</h2>';
     echo $pitching_stats->execute();
@@ -42,7 +42,7 @@ if ($position === 'LHP' || $position === 'RHP') {
 
     $referrer = "player.php?id=$id";
     $creationUrl = "create-edit-position-stat.php";
-    $position_stats = new ReadTemplater('PositionStat', $columns, $id, 'player_id', true, true, $creationUrl, "?player_id=$id", null, $referrer, 'Position Stat');
+    $position_stats = new ReadTemplater('PositionStat', $columns, $id, 'player_id', 'PositionStat', true, $creationUrl, "?player_id=$id", null, $referrer, 'Position Stat');
 
     echo '<h2>Statistics</h2>';
     echo $position_stats->execute();
