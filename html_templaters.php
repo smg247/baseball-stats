@@ -221,7 +221,7 @@ class CreateEditTemplater extends HtmlTemplater {
     function execute()
     {
         $formAction = 'create-edit-record.php';
-        $output = "<div class='row'><form class='form' method='get' action='$formAction'></div>";
+        $output = "<div class='row'><div class='col-md-8'><form class='form' method='get' action='$formAction'>";
 
         foreach ($this->columns as &$column) {
             $output .= $this->create_field($column);
@@ -230,7 +230,7 @@ class CreateEditTemplater extends HtmlTemplater {
         $output .= $this->create_hidden_fields();
 
         $output .= '<br><input class="btn" type="submit" value="Submit">';
-        $output .= '</form>';
+        $output .= '</form></div></div>';
 
         return $output;
     }

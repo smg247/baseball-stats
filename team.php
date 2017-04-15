@@ -4,8 +4,11 @@ include 'header.html';
 
 $id = $_GET['id'];
 
-$columns = array(Column::simpleDisplayColumn('city', 'City'), Column::simpleDisplayColumn('name', 'Name'));
-$team_templater = new ReadTemplater('Team', $columns, $id, "id", null, true, 'create-edit-team.php', null, null, null, null);
+$columns = array(Column::simpleDisplayColumn('city', 'City'),
+                 Column::simpleDisplayColumn('name', 'Name'),
+                 Column::simpleDisplayColumn('league', 'League'),
+                 Column::simpleDisplayColumn('division', 'Division'));
+$team_templater = new ReadTemplater('DetailedTeam', $columns, $id, "id", null, true, 'create-edit-team.php', null, null, null, null);
 
 echo '<h1>Team Details</h1>';
 echo $team_templater->execute();
